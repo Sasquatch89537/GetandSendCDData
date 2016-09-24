@@ -5,7 +5,7 @@ session_start();
 if(isset($_FILES['fileUpload'])) {
 //File Upload and Validate Process
     try {
-        if (($log = fopen("log.txt", "a")) === false) { //open a log.txt file
+        if (($log = fopen("/var/www/html/CDprinter/log.txt", "a")) === false) { //open a log.txt file
 //if unable to open throw exception
             throw new RuntimeException("Log File Did Not Open.");
         }

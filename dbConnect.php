@@ -9,7 +9,7 @@ class MysqliConfiguration {
                 // throw exceptions instead of PHP errors
                 mysqli_report(MYSQLI_REPORT_STRICT);
                 // connect!
-                self::$mysqli = new mysqli("localhost", "root", "root1", "ClientDB");
+                self::$mysqli = new mysqli("localhost", "root", "rO15463ot", "ClientDB");
             } catch(mysqli_sql_exception $error) {
                 throw(new mysqli_sql_exception("Unable to connect to mySQL", 0, $error));
             }

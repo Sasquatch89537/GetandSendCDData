@@ -14,6 +14,7 @@ include_once("dbConnect.php");
 
 if(isset($_SESSION['errorMsg'])){
     $error = $_SESSION['errorMsg'];
+    unset($_SESSION['errorMsg']);
     $clear = "<li><a href='clear.php'>Clear</a></li>";
 }
 else{
@@ -32,6 +33,7 @@ else{
 
 if(isset($_SESSION['output'])){
     $output = $_SESSION['output'];
+    unset($_SESSION['output']);
 }
 else{
     $output = "";
@@ -172,9 +174,9 @@ else{
             /*phpgrid.com/documentation/*/
             $dg = new C_DataGrid("SELECT * FROM clients", "rowId", "clients");
             $dg->set_multiselect(true);
-            //$dg->enable_search(true);
+            $dg->enable_search(true);
             //$dg->enable_export('EXCEL');
-            $dg->set_pagesize(50);
+            $dg->set_pagesize(100);
             $dg->enable_edit('INLINE', 'D');
             $dg->display();
 

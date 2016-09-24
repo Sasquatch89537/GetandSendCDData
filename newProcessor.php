@@ -1,4 +1,5 @@
 <?php
+include_once ("dbConnect.php");
 if(isset($_POST['selectedRows'])){
     try{
         $lines = array();
@@ -61,6 +62,26 @@ if(isset($_POST['selectedRows'])){
         }
         ftp_close($connect_it);
 
+        /*$mysqli = MysqliConfiguration::getMysqli();
+        if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+            throw(new mysqli_sql_exception("input is not a mysqli object"));
+        }
+
+        foreach($dataArray as $arr) {
+            $clientId = $arr['clientId'];
+            $query     = "DELETE FROM clients WHERE clientId = ?";
+            $statement = $mysqli->prepare($query);
+            if($statement === false) {
+                throw(new mysqli_sql_exception("Unable to prepare statement"));
+            }
+            $wasClean = $statement->bind_param("s", $clientId);
+            if($wasClean === false) {
+                throw(new mysqli_sql_exception("Unable to bind parameters"));
+            }
+            if($statement->execute() === false) {
+                throw(new mysqli_sql_exception("Unable to execute mySQL statement"));
+            }
+        }*/
 
 
     }catch(Exception $e){
@@ -70,6 +91,7 @@ if(isset($_POST['selectedRows'])){
     }
 
 }
+
 
 
 

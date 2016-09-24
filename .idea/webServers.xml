@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="f2976b07-e8a7-4b28-b149-af30ff035b6a" name="PayDay Web Sever - Transfer CD Data" url="http://ubuntu01/">
-        <fileTransfer host="ubuntu01" port="22" rootFolder="/var/www/html/CDprinter" accessType="SFTP" password="dfccdfdedfdadf9bdf9f" username="ryan">
+        <fileTransfer host="ubuntu01" port="22" rootFolder="/var/www/html/CDprinter" accessType="SFTP" password="dfdfdfe8df9bdf9fdf9edf9cdf99dfdfdfc4dfdedfdf" username="ryan">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
