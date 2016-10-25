@@ -35,9 +35,9 @@ if(isset($_POST['selectedRows'])){
         //create the file
         echo "<h3>Job Files Created</h3>";
         $today = new DateTime("NOW");
-        $ftp_host = "7Purtell";
-        $ftp_user_name = "brendan";
-        $ftp_user_pass = "ftp";
+        $ftp_host = "Client";
+        $ftp_user_name = "user";
+        $ftp_user_pass = "pass";
         $connect_it = ftp_connect($ftp_host);
         $login_result = ftp_login($connect_it, $ftp_user_name, $ftp_user_pass);
         foreach($lines as $arr) {
