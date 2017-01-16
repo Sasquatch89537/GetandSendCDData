@@ -34,12 +34,11 @@ if(isset($_POST['selectedRows'])){
         //var_dump($lines);
         //create the file
         echo "<h3>Job Files Created</h3>";
-        echo "<h3>Connecting to Client</h3>";
         $today = new DateTime("NOW");
-        $ftp_host = "7purtell.payday.local";
-        $ftp_user_name = "brendan";
-        $ftp_user_pass = "ftp";
-        $connect_it = ftp_connect($ftp_host) or die("Couldn't connect to $ftp_host");
+        $ftp_host = "Client";
+        $ftp_user_name = "user";
+        $ftp_user_pass = "pass";
+        $connect_it = ftp_connect($ftp_host);
         $login_result = ftp_login($connect_it, $ftp_user_name, $ftp_user_pass);
         foreach($lines as $arr) {
             $fileName = "ftp/jobfile ". substr($arr[0],8). " " .$today->format("M-d-Y-H-s").".txt";
