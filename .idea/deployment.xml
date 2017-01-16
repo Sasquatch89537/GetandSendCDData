@@ -9,14 +9,21 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Payday Web Server - ACB">
+      <paths name="Payday Web Server - Abarim">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Payday Web Server - Seasonal Magic">
+      <paths name="Payday Web Server - TestEnvironment">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Payday Web Server - vendorRecon">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
