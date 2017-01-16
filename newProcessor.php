@@ -11,7 +11,7 @@ if(isset($_POST['selectedRows'])){
 
                     $lines[] = array(
                         "JobID = " . $arr['clientId'],
-                        "ClientID = 7PURTELL",
+                        "ClientID = CLIENT",
                         "Data = C:\\PTBurnData\\FileTrees\\" . $arr['clientId'],
                         "CloseDisc = YES",
                         "VerifyDisc = YES",
