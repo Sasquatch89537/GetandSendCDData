@@ -106,7 +106,7 @@ if(isset($_FILES['fileUpload'])){
             if($job[0] !== null) {
                 $lines[] = array(
                     "JobID = " . $job[1],
-                    "ClientID = 7PURTELL",
+                    "ClientID = CLIENT",
                     "Data = C:\\PTBurnData\\FileTrees\\" . $job[0],
                     "CloseDisc = YES",
                     "DeleteFiles = YES",
@@ -132,9 +132,9 @@ if(isset($_FILES['fileUpload'])){
         //var_dump($lines);
         //create the file
 
-        $ftp_host = "7Purtell";
-        $ftp_user_name = "brendan";
-        $ftp_user_pass = "ftp";
+        $ftp_host = "CLIENT";
+        $ftp_user_name = "name";
+        $ftp_user_pass = "password";
         $connect_it = ftp_connect($ftp_host);
         $login_result = ftp_login($connect_it, $ftp_user_name, $ftp_user_pass);
         foreach($lines as $arr) {
