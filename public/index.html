@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Payday CD Generator</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/dataTables.min.css">
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/semantic.min.js"></script>
+    <script src="scripts/datatables.min.js"></script>
+    <script src="scripts/Index.js"></script>
+</head>
+
+<body>
+    <div class="ui segment">
+        <h1 class="ui header">Updating the Client Database ... </h1>
+        <h4 class="ui header">
+            <div class="ui bulleted list">
+                <div class="item">Pull list of clients from Evolution>Client>Client Screen Ctrl+E.</div>
+                <div class="item">Save the list.</div>
+                <div class="item">Open the list in Excel.</div>
+                <div class="item">Save as a .csv.</div>
+                <div class="item">Upload the .csv list of clients here.</div>
+            </div>
+        </h4>
+        <h5>This will update the client list in this application's Client Database</h5>
+        <div class="ui grid">
+            <div class="eight wide column">
+                <div class="ui file input"> <input type="file" /> </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui small right button primary" type="submit">Update Client Database</div>
+            </div>
+        </div>
+    </div>
+    <table id="main_table" class="ui table striped definition display">
+        <thead class="full-width">
+            <tr>
+                <th>ID</th>
+                <th>Client ID</th>
+                <th>Client Name</th>
+                <th>Client Number</th>
+            </tr>
+        </thead>
+        <tbody id="contact_table_body">
+        </tbody>
+    </table>
+    <div class="ui segment">
+        <div class="ui right button primary" id="button">
+            Send To Printer
+        </div>
+    </div>
+</body>
+
+</html>
