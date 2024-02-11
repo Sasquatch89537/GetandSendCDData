@@ -8,12 +8,12 @@ const port = 3000;
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
+    console.log("Client Connected");
     res.sendFile(__dirname + '/public/index.html');
 });
 
 app.get('/readMasterData', (req, res) => {
     readMasterFile("./masterData.csv").then((contents) => {
-        console.log(contents);
         res.send(contents);
     });
 })
@@ -26,6 +26,12 @@ app.get('/clientData', (req, res) => {
     console.log(req.query.data);
     createJobFiles(req.query.data)
 })
+
+app.get('/uploadDBFile', (req, res) => {
+    console.log("uploadDBFile", req.query.data);
+    fs.writeFileSync("./masterData.csv", req.query.data);
+    res.sendStatus(200);
+});
 
 async function readMasterFile(path) {
     const fileStream = fs.createReadStream(path);
