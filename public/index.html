@@ -9,12 +9,12 @@
     <script src="scripts/jquery.min.js"></script>
     <script src="scripts/semantic.min.js"></script>
     <script src="scripts/datatables.min.js"></script>
-    <script src="scripts/Index.js"></script>
+    <script src="scripts/index.js"></script>
 </head>
 
 <body>
     <div class="ui segment">
-        <h1 class="ui header">Updating the Client Database ... </h1>
+        <h1 class="ui top attached header">Updating the Client Database </h1>
         <h4 class="ui header">
             <div class="ui bulleted list">
                 <div class="item">Pull list of clients from Evolution>Client>Client Screen Ctrl+E.</div>
@@ -25,30 +25,51 @@
             </div>
         </h4>
         <h5>This will update the client list in this application's Client Database</h5>
+    </div>
+
+    <div class="ui segment">
         <div class="ui grid">
             <div class="eight wide column">
                 <div class="ui file input"> <input id="file_selector" type="file" accept=".csv" /> </div>
             </div>
             <div class="four wide column">
-                <div id="update_db" class="ui disabled small right button primary">Update Client Database</div>
+                <div id="update_db" class="ui disabled button primary">Update Client Database</div>
+                <div id="clear_db" class="ui button primary">Clear Client Database</div>
             </div>
         </div>
     </div>
-    <table id="main_table" class="ui table striped definition display">
-        <thead class="full-width">
-            <tr>
-                <th>ID</th>
-                <th>Client ID</th>
-                <th>Client Name</th>
-                <th>Client Number</th>
-            </tr>
-        </thead>
-        <tbody id="contact_table_body">
-        </tbody>
-    </table>
-    <div class="ui segment">
-        <div class="ui right button primary" id="button">
-            Send To Printer
+    <div style="margin: 15px;">
+        <table id="main_table" class="ui table striped definition display" style="width:100%;">
+            <thead class="full-width">
+                <tr>
+                    <th>ID</th>
+                    <th>Client ID</th>
+                    <th>Client Name</th>
+                    <th>Client Number</th>
+                </tr>
+            </thead>
+            <tbody id="contact_table_body">
+            </tbody>
+        </table>
+        <div id="selectedText" class="ui large label">Total Selected: 0</div>
+        <div id="selectAll" class="ui primary button" id="button">Select All</div>
+        <div id="unselectAll" class="ui primary button" id="button">Unselect All</div>
+    </div>
+
+    <div class="ui segments">
+        <div class="ui segment">
+            <div id="sendToPrinter" class="ui disabled primary button" id="button">Send To Printer</div>
+        </div>
+        <div id="pendingJobs" class="ui segment">
+            <div class="ui grid">
+                <div class="three wide column">
+                    <h2>Current Pending Jobs</h2>
+                </div>
+                <div class="one wide column">
+                    <div id="pendingCount" class="ui large label"> 0</div>
+                </div>
+            </div>
+            <div id="pendingJobsList" class="ui segment" style="white-space: pre;" hidden="true"></div>
         </div>
     </div>
 </body>

@@ -2,7 +2,9 @@ const express = require('express');
 const fs = require("fs");
 const readline = require('readline');
 const app = express();
-const port = 3000;
+const port = 63025;
+
+var path = './testFiles';
 
 // Serve static files
 app.use(express.static('public'));
@@ -18,6 +20,12 @@ app.get('/readMasterData', (req, res) => {
     });
 })
 
+app.get('/clearMasterData', (req, res) => {
+    fs.writeFileSync("./masterData.csv", "");
+    res.sendStatus(200);
+})
+
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
@@ -29,10 +37,19 @@ app.get('/createJobFiles', (req, res) => {
 })
 
 app.get('/uploadDBFile', (req, res) => {
-    console.log("uploadDBFile", req.query.data);
+    //console.log("uploadDBFile", req.query.data);
     fs.writeFileSync("./masterData.csv", req.query.data);
     res.sendStatus(200);
 });
+
+app.get('/checkJobFiles', (req, res) => {
+    //console.log("Checking pending jobs");
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+    }
+    const files = fs.readdirSync(path);
+    res.send(files.length > 0 ? files : []);
+})
 
 async function readMasterFile(path) {
     const fileStream = fs.createReadStream(path);
@@ -71,7 +88,6 @@ function createJobFiles(masterData) {
     for (let obj of masterData) {
         console.log(obj);
         let fileContents = createJobFileFromRow(obj);
-        let path = './testFiles';
 
         try {
             if (!fs.existsSync(path)) {

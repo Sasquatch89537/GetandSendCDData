@@ -1,5 +1,6 @@
 //import DataTable from 'datatables.net';
-var table = undefined;
+let table = undefined;
+let sendToPrinter = undefined;
 
 $(document).ready(() => {
     //new DataTable('#main_table');
@@ -34,12 +35,47 @@ $(document).ready(() => {
         reader.readAsText(fileName);
     });
 
-    document.querySelector('#button').addEventListener('click', function () {
-        saveSelectedRows();
+    $("#clear_db").on("click", () => {
+        $.ajax({
+            url: '/clearMasterData',
+            type: 'get',
+            success: () => {
+                table.destroy(); getMasterData();
+            },
+                error: function (xhr, error) { console.log(xhr, error); }
+            });;
     });
+
+    $("#selectAll").on("click", selectAllRows);
+    $("#unselectAll").on("click", unselectAllRows);
+
+    sendToPrinter = $("#sendToPrinter");
+    sendToPrinter.on('click', function () {
+        sendRowsToPrinter();
+    });
+
+    checkPendingJobFiles();
+    setInterval(() => {
+        checkPendingJobFiles();
+    }, 2500);
 });
 
-function getMasterData() { 
+function checkPendingJobFiles() {
+    $.ajax({
+        url: '/checkJobFiles',
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+            $("#pendingCount").text(data.length);
+            $("#pendingJobs").attr("hidden", data.length == 0);
+            $("#pendingJobsList").attr("hidden", data.length == 0);
+            $("#pendingJobsList").html(data.join('\n'));
+        },
+        error: function (xhr, error) { console.log(xhr, error); }
+    });
+}
+
+function getMasterData() {
     $.ajax({
         url: '/readMasterData',
         type: 'get',
@@ -49,7 +85,7 @@ function getMasterData() {
 }
 
 function initializeTable(data) {
-    console.log(data);
+    //console.log(data);
     table = $("#main_table").DataTable({
         data: data,
         columns: [
@@ -61,14 +97,40 @@ function initializeTable(data) {
     });
     table.on('click', 'tbody tr', function (e) {
         e.currentTarget.classList.toggle('selected');
+        updateTableSelected();
     });
+}
+
+function updateTableSelected() {
+
+    let totalSel = table.rows('.selected').data().length;
+    $("#selectedText").text("Total Selected: " + totalSel);
+
+    if (totalSel > 0) {
+        sendToPrinter.addClass("enabled");
+        sendToPrinter.removeClass("disabled");
+    }
+    else {
+        sendToPrinter.addClass("disabled");
+        sendToPrinter.removeClass("enabled");
+    }
+}
+
+function unselectAllRows() {
+    table.rows('.selected').nodes().to$().removeClass('selected');
+    updateTableSelected();
+}
+
+function selectAllRows() {
+    table.rows().nodes().to$().addClass('selected');
+    updateTableSelected();
 }
 
 function updateTableData() {
     $("#main_table").DataTable({ data: data })
 }
 
-function saveSelectedRows() {
+function sendRowsToPrinter() {
     let selRows = table.rows('.selected').data();
     console.log(selRows);
     let formattedData = [];
@@ -79,14 +141,15 @@ function saveSelectedRows() {
 
     console.log("Formatted Data", formattedData);
 
-    $.ajax({
-        url: '/createJobFiles',
-        data: { data: formattedData },
-        type: 'get',
-        dataType: 'json',
-        success: function (data) {/*actions on success*/ },
-        error: function (xhr, error) { console.log(xhr, error); }
-    });
-    // alert('Successfully posted to a remote URL via $.ajax. Await response.');
-
+    while (formattedData.length > 0) {
+        $.ajax({
+            url: '/createJobFiles',
+            data: { data: formattedData.splice(0, 5) },
+            type: 'get',
+            dataType: 'json',
+            success: () => { },
+            error: function (xhr, error) { console.log(xhr, error); }
+        });
+        unselectAllRows();
+    }
 }
