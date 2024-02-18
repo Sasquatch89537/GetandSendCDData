@@ -80,7 +80,7 @@ function saveSelectedRows() {
     console.log("Formatted Data", formattedData);
 
     $.ajax({
-        url: '/clientData',
+        url: '/createJobFiles',
         data: { data: formattedData },
         type: 'get',
         dataType: 'json',

@@ -22,9 +22,10 @@ app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
 
-app.get('/clientData', (req, res) => {
+app.get('/createJobFiles', (req, res) => {
     console.log(req.query.data);
     createJobFiles(req.query.data)
+    res.sendStatus(200);
 })
 
 app.get('/uploadDBFile', (req, res) => {
@@ -49,12 +50,15 @@ async function readMasterFile(path) {
     return fileContents;
 }
 
-function writeMasterFile() {
-
-}
 
 function clientCSVRowToJSON(data) {
     let dataArray = data.split(',');
+
+    // Checking to make sure the file line has enough characters
+    if (dataArray.length != 4) {
+        console.log("There's an issue with the line ", dataArray)
+    }
+
     return {
         index: dataArray[0],
         clientId: dataArray[1],

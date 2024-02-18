@@ -1,7 +1,0 @@
-JobID = CDN0000
-ClientID = CLIENT
-Data = C:\PTBurnData\FileTrees\CDN0000
-CloseDisc = YES
-VerifyDisc = YES
-MergeField = CDN0000 - Client 001
-PrintLabel = C:\PTBurnData\LabelData\CDlabelimage.std
