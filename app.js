@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require("fs");
+const path = require('path')
 const readline = require('readline');
 const app = express();
 const port = 3000;
@@ -7,10 +8,12 @@ const port = 3000;
 //! For local development
 //var path = './testFiles';
 
-var path = 'C:/CD_JobFiles';
+var job_path = 'C:/PTBurnJobs';
 
 // Serve static files
 app.use(express.static('public'));
+app.use('/stylesheets', express.static(path.join(__dirname, 'public/stylesheets')))
+app.use('/scripts', express.static(path.join(__dirname, 'public/scripts')))
 
 app.get('/', (req, res) => {
     console.log("Client Connected");
@@ -18,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/readMasterData', (req, res) => {
+    //TODO: Create master data file if doesn't exist
     readMasterFile("./masterData.csv").then((contents) => {
         res.send(contents);
     });
@@ -39,17 +43,18 @@ app.get('/createJobFiles', (req, res) => {
 })
 
 app.get('/uploadDBFile', (req, res) => {
-    //console.log("uploadDBFile", req.query.data);
+    console.log("uploadDBFile", req.query.data);
+
     fs.writeFileSync("./masterData.csv", req.query.data);
     res.sendStatus(200);
 });
 
 app.get('/checkJobFiles', (req, res) => {
     //console.log("Checking pending jobs");
-    if (!fs.existsSync(path)) {
-        fs.mkdirSync(path);
+    if (!fs.existsSync(job_path)) {
+        fs.mkdirSync(job_path, { recursive: true });
     }
-    const files = fs.readdirSync(path);
+    const files = fs.readdirSync(job_path);
     res.send(files.length > 0 ? files : []);
 })
 
@@ -74,15 +79,13 @@ function clientCSVRowToJSON(data) {
     let dataArray = data.split(',');
 
     // Checking to make sure the file line has enough characters
-    if (dataArray.length != 4) {
+    if (dataArray.length != 1) {
         console.log("There's an issue with the line ", dataArray)
     }
 
     return {
-        index: dataArray[0],
-        clientId: dataArray[1],
-        clientName: dataArray[2],
-        clientNumber: dataArray[3]
+        clientId: dataArray[0],
+        clientName: dataArray[1],
     }
 }
 
@@ -92,10 +95,10 @@ function createJobFiles(masterData) {
         let fileContents = createJobFileFromRow(obj);
 
         try {
-            if (!fs.existsSync(path)) {
-                fs.mkdirSync(path);
+            if (!fs.existsSync(job_path)) {
+                fs.mkdirSync(job_path);
             }
-            fs.writeFileSync(path + "/" + obj.clientName + "_CDJobFile.jrq", fileContents.join('\n'));
+            fs.writeFileSync(job_path + "/" + obj.clientName + "_CDJobFile.jrq", fileContents.join('\n'));
             // file written successfully
         } catch (err) {
             console.error(err);

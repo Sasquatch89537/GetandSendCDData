@@ -89,10 +89,8 @@ function initializeTable(data) {
     table = $("#main_table").DataTable({
         data: data,
         columns: [
-            { data: "index" },
             { data: "clientId" },
             { data: "clientName" },
-            { data: "clientNumber" }
         ]
     });
     table.on('click', 'tbody tr', function (e) {
