@@ -4,7 +4,10 @@ const readline = require('readline');
 const app = express();
 const port = 3000;
 
-var path = './testFiles';
+//! For local development
+//var path = './testFiles';
+
+var path = 'C:/CD_JobFiles';
 
 // Serve static files
 app.use(express.static('public'));
@@ -24,7 +27,6 @@ app.get('/clearMasterData', (req, res) => {
     fs.writeFileSync("./masterData.csv", "");
     res.sendStatus(200);
 })
-
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
