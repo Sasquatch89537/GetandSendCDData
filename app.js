@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require("fs");
 const readline = require('readline');
 const app = express();
-const port = 63025;
+const port = 3000;
 
 var path = './testFiles';
 
