@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <base href="/index.html" />
+<base href="/index.html" />
+
 <head>
     <title>Payday CD Generator</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
@@ -58,16 +59,51 @@
         <div class="ui segment">
             <div id="sendToPrinter" class="ui disabled primary button" id="button">Send To Printer</div>
         </div>
+    </div>
+    <div class="ui horizontal segments">
         <div id="pendingJobs" class="ui segment">
             <div class="ui grid">
-                <div class="three wide column">
+                <div class="six wide column">
                     <h2>Current Pending Jobs</h2>
                 </div>
-                <div class="one wide column">
+                <div class="three wide column">
                     <div id="pendingCount" class="ui large label"> 0</div>
                 </div>
             </div>
-            <div id="pendingJobsList" class="ui segment" style="white-space: pre;" hidden="true"></div>
+            <div>
+                <table class="ui unstackable celled short scrolling table">
+                    <thead>
+                        <tr>
+                            <th>Job Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingJobsList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="inProgressJobs" class="ui segment">
+            <div class="ui grid">
+                <div class="five wide column">
+                    <h2>In-Progress Jobs</h2>
+                </div>
+                <div class="three wide column">
+                    <div id="inProgressCount" class="ui large label"> 0</div>
+                </div>
+            </div>
+
+            <div class="one wide column">
+                <table class="ui unstackable celled short scrolling table">
+                    <thead>
+                        <tr>
+                            <th>Job Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inProgressJobsList">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>

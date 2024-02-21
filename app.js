@@ -37,7 +37,7 @@ app.listen(port, () => {
 });
 
 app.get('/createJobFiles', (req, res) => {
-    console.log(req.query.data);
+    //console.log(req.query.data);
     createJobFiles(req.query.data)
     res.sendStatus(200);
 })
@@ -49,14 +49,26 @@ app.get('/uploadDBFile', (req, res) => {
     res.sendStatus(200);
 });
 
+app.get('/uploadDBFileChunk', (req, res) => {
+    console.log("uploadDBFileChunk", req.query.data);
+
+    fs.appendFileSync("./masterData.csv", req.query.data + "\n");
+    res.sendStatus(200);
+});
+
 app.get('/checkJobFiles', (req, res) => {
     //console.log("Checking pending jobs");
     if (!fs.existsSync(job_path)) {
         fs.mkdirSync(job_path, { recursive: true });
     }
     const files = fs.readdirSync(job_path);
+    
+    // Delete Done Files
+    files.filter(f => f.startsWith("DON")).map(f => fs.unlinkSync(job_path+"/"+f));
+    
     res.send(files.length > 0 ? files : []);
 })
+
 
 async function readMasterFile(path) {
     const fileStream = fs.createReadStream(path);
@@ -69,7 +81,9 @@ async function readMasterFile(path) {
     let fileContents = [];
     for await (const line of rl) {
         // Each line in input.txt will be successively available here as `line`.
-        fileContents.push(clientCSVRowToJSON(line));
+        if (line.length > 0) {
+            fileContents.push(clientCSVRowToJSON(line));
+        }
     }
     return fileContents;
 }
@@ -79,7 +93,7 @@ function clientCSVRowToJSON(data) {
     let dataArray = data.split(',');
 
     // Checking to make sure the file line has enough characters
-    if (dataArray.length != 1) {
+    if (dataArray.length != 2) {
         console.log("There's an issue with the line ", dataArray)
     }
 
@@ -91,7 +105,7 @@ function clientCSVRowToJSON(data) {
 
 function createJobFiles(masterData) {
     for (let obj of masterData) {
-        console.log(obj);
+        //console.log(obj);
         let fileContents = createJobFileFromRow(obj);
 
         try {

@@ -18,20 +18,31 @@ $(document).ready(() => {
         reader.addEventListener("loadend", function (event) {
             console.log(event.target.result);
 
-            $.ajax({
-                url: '/uploadDBFile',
-                data: { data: reader.result },
-                type: 'get',
-                success: (data) => {
-                    console.log("uploaded file");
-                    table.destroy();
-                    getMasterData();
-                    $("#update_db").addClass("disabled");
-                    $("#file_selector").val = "";
-                },
-                error: function (xhr, error) { console.log(xhr, error); }
-            });
-        })
+            let uploadTimeout = undefined;
+            let readerArray = reader.result.replace("\r", "").split("\n");
+            while (readerArray.length > 0) {
+                let splicedData = readerArray.splice(0, 100)
+                $.ajax({
+                    url: '/uploadDBFileChunk',
+                    data: { data: splicedData.join("\n") },
+                    type: 'get',
+                    success: (data) => {
+                        if (uploadTimeout != undefined) {
+                            clearTimeout(uploadTimeout);
+                        }
+                        uploadTimeout = setTimeout(() => {
+                            console.log("uploaded file");
+                            table.destroy();
+                            getMasterData();
+                            $("#update_db").addClass("disabled");
+                            $("#file_selector").val = "";
+                        }, 2500);
+                    },
+                    error: function (xhr, error) { console.log(xhr, error); }
+                });
+            }
+        });
+
         reader.readAsText(fileName);
     });
 
@@ -42,8 +53,8 @@ $(document).ready(() => {
             success: () => {
                 table.destroy(); getMasterData();
             },
-                error: function (xhr, error) { console.log(xhr, error); }
-            });;
+            error: function (xhr, error) { console.log(xhr, error); }
+        });;
     });
 
     $("#selectAll").on("click", selectAllRows);
@@ -57,7 +68,7 @@ $(document).ready(() => {
     checkPendingJobFiles();
     setInterval(() => {
         checkPendingJobFiles();
-    }, 2500);
+    }, 5000);
 });
 
 function checkPendingJobFiles() {
@@ -66,10 +77,13 @@ function checkPendingJobFiles() {
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            $("#pendingCount").text(data.length);
-            $("#pendingJobs").attr("hidden", data.length == 0);
-            $("#pendingJobsList").attr("hidden", data.length == 0);
-            $("#pendingJobsList").html(data.join('\n'));
+            let pending = data.filter((d) => {return d.toUpperCase().includes("PROGRESS") == false});
+            $("#pendingCount").text(pending.length);
+            $("#pendingJobsList").html(pending.map((d) => { return "<tr><td>"+d.toString()+"</td></tr>"}).join(""));
+
+            data = data.filter((d) => {return d.toUpperCase().includes("PROGRESS")} )
+            $("#inProgressCount").text(data.length);
+            $("#inProgressJobsList").html(data.map((d) => { return "<tr><td>"+d.toString()+"</td></tr>"}).join(""));
         },
         error: function (xhr, error) { console.log(xhr, error); }
     });
@@ -142,7 +156,7 @@ function sendRowsToPrinter() {
     while (formattedData.length > 0) {
         $.ajax({
             url: '/createJobFiles',
-            data: { data: formattedData.splice(0, 5) },
+            data: { data: formattedData.splice(0, 10) },
             type: 'get',
             dataType: 'json',
             success: () => { },
