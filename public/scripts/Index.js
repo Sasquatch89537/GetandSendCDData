@@ -13,12 +13,21 @@ $(document).ready(() => {
     });
 
     $("#update_db").on("click", () => {
+        $("#update_db").addClass("disabled loading");
         let fileName = $("#file_selector")[0].files[0];
         var reader = new FileReader();
         reader.addEventListener("loadend", function (event) {
             console.log(event.target.result);
 
             let uploadTimeout = undefined;
+            if (reader.result.length == 0) {
+                alert("File must contain data");
+                $("#update_db").removeClass("loading");
+                $("#update_db").addClass("disabled");
+                $("#file_selector").val("");
+                return;
+            }
+
             let readerArray = reader.result.replace("\r", "").split("\n");
             while (readerArray.length > 0) {
                 let splicedData = readerArray.splice(0, 100)
@@ -34,11 +43,12 @@ $(document).ready(() => {
                             console.log("uploaded file");
                             table.destroy();
                             getMasterData();
+                            $("#update_db").removeClass("loading");
                             $("#update_db").addClass("disabled");
-                            $("#file_selector").val = "";
+                            $("#file_selector").val("");
                         }, 2500);
                     },
-                    error: function (xhr, error) { console.log(xhr, error); }
+                    error: function (xhr, error) { console.log(xhr, error); $("#update_db").removeClassClass("loading disabled"); }
                 });
             }
         });
@@ -54,9 +64,19 @@ $(document).ready(() => {
                 table.destroy(); getMasterData();
             },
             error: function (xhr, error) { console.log(xhr, error); }
-        });;
+        });
     });
 
+    $("#clearCheckbox").checkbox();
+    $("#clearCheckbox").on("click", () => {
+        let isChecked = $("#clearCheckbox").checkbox("is checked");
+        if (isChecked)
+            $("#clearPendingJobs").removeClass("disabled");
+        else
+            $("#clearPendingJobs").addClass("disabled");
+    })
+
+    $("#clearPendingJobs").on("click", clearPendingJobs)
     $("#selectAll").on("click", selectAllRows);
     $("#unselectAll").on("click", unselectAllRows);
 
@@ -71,19 +91,31 @@ $(document).ready(() => {
     }, 5000);
 });
 
+function clearPendingJobs() {
+    $("#clearPendingJobs").addClass("loading disabled");
+    $("#clearCheckbox").checkbox("set unchecked");
+    $.ajax({
+        url: '/clearPendingJobFiles',
+        type: 'get',
+        success: () => {$("#clearPendingJobs").removeClass("loading")},
+        error: function (xhr, error) { console.log(xhr, error); $("#clearPendingJobs").removeClass("loading disabled")}
+    });
+
+}
+
 function checkPendingJobFiles() {
     $.ajax({
         url: '/checkJobFiles',
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            let pending = data.filter((d) => {return d.toUpperCase().includes("PROGRESS") == false});
+            let pending = data.filter((d) => { return d.toUpperCase().endsWith(".JRQ") });
             $("#pendingCount").text(pending.length);
-            $("#pendingJobsList").html(pending.map((d) => { return "<tr><td>"+d.toString()+"</td></tr>"}).join(""));
+            $("#pendingJobsList").html(pending.map((d) => { return "<tr><td>" + d.toString() + "</td></tr>" }).join(""));
 
-            data = data.filter((d) => {return d.toUpperCase().includes("PROGRESS")} )
+            data = data.filter((d) => { return d.toUpperCase().endsWith(".INP") })
             $("#inProgressCount").text(data.length);
-            $("#inProgressJobsList").html(data.map((d) => { return "<tr><td>"+d.toString()+"</td></tr>"}).join(""));
+            $("#inProgressJobsList").html(data.map((d) => { return "<tr><td>" + d.toString() + "</td></tr>" }).join(""));
         },
         error: function (xhr, error) { console.log(xhr, error); }
     });

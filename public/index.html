@@ -25,7 +25,7 @@
                 <div class="item">Upload the .csv list of clients here.</div>
             </div>
         </h4>
-        <h5>This will update the client list in this application's Client Database</h5>
+        <h5>This will append the client list in this application's Client Database</h5>
     </div>
 
     <div class="ui segment">
@@ -51,13 +51,20 @@
             </tbody>
         </table>
         <div id="selectedText" class="ui large label">Total Selected: 0</div>
-        <div id="selectAll" class="ui primary button" id="button">Select All</div>
-        <div id="unselectAll" class="ui primary button" id="button">Unselect All</div>
+        <div id="selectAll" class="ui primary button">Select All</div>
+        <div id="unselectAll" class="ui primary button">Unselect All</div>
     </div>
 
-    <div class="ui segments">
+    <div class="ui horizontal segments">
         <div class="ui segment">
-            <div id="sendToPrinter" class="ui disabled primary button" id="button">Send To Printer</div>
+            <div id="sendToPrinter" class="ui fluid wide disabled primary button">Send to Printer</div>
+        </div>
+        <div class="ui segment">
+            <div class="ui toggle checkbox" id="clearCheckbox">
+                <input type="checkbox">
+                <label>Clear Pending Jobs</label>
+            </div>
+            <div id="clearPendingJobs" class="ui disabled inverted primary button">Clear Pending Jobs</div>
         </div>
     </div>
     <div class="ui horizontal segments">
@@ -71,7 +78,7 @@
                 </div>
             </div>
             <div>
-                <table class="ui unstackable celled short scrolling table">
+                <table class="ui unstackable striped celled short scrolling table">
                     <thead>
                         <tr>
                             <th>Job Name</th>
@@ -94,7 +101,7 @@
             </div>
 
             <div class="one wide column">
-                <table class="ui unstackable celled short scrolling table">
+                <table class="ui unstackable striped celled short scrolling table">
                     <thead>
                         <tr>
                             <th>Job Name</th>

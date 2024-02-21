@@ -21,7 +21,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/readMasterData', (req, res) => {
-    //TODO: Create master data file if doesn't exist
+    if (!fs.existsSync("./masterData.csv"))
+        fs.writeFileSync("./masterData.csv", "");
+
     readMasterFile("./masterData.csv").then((contents) => {
         res.send(contents);
     });
@@ -39,6 +41,15 @@ app.listen(port, () => {
 app.get('/createJobFiles', (req, res) => {
     //console.log(req.query.data);
     createJobFiles(req.query.data)
+    res.sendStatus(200);
+})
+
+app.get('/clearPendingJobFiles', (req, res) => {
+    //console.log(req.query.data);
+    const files = fs.readdirSync(job_path);
+    
+    // Delete Done Files
+    files.filter(f => f.toUpperCase().endsWith(".JRQ")).map(f => fs.unlinkSync(job_path+"/"+f));
     res.sendStatus(200);
 })
 
@@ -64,7 +75,7 @@ app.get('/checkJobFiles', (req, res) => {
     const files = fs.readdirSync(job_path);
     
     // Delete Done Files
-    files.filter(f => f.startsWith("DON")).map(f => fs.unlinkSync(job_path+"/"+f));
+    files.filter(f => f.toUpperCase().endsWith(".DON")).map(f => fs.unlinkSync(job_path+"/"+f));
     
     res.send(files.length > 0 ? files : []);
 })
