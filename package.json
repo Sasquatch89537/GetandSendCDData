@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron-packager ./ CD_Burner --platform=win32 --arch=x64 --ignore=\\Old_PHP --ignore=node_modules/electron-* --overwrite=true --prune=true"
+    "build": "electron-packager ./ CD_Burner --platform=win32 --arch=x64 --ignore=\\Old_PHP --ignore=CD_Burner* --ignore=node_modules/electron-* --overwrite=true --prune=true"
   },
   "author": "",
   "license": "ISC",
