@@ -1,20 +1,23 @@
 //import DataTable from 'datatables.net';
 let table = undefined;
 let sendToPrinter = undefined;
+let fileSelector = undefined;
 
 $(document).ready(() => {
     //new DataTable('#main_table');
     //callout to get the file as an array of lines convert it to html
     getMasterData();
 
-    $("#file_selector").on("change", () => {
-        console.log($("#file_selector").val());
+    fileSelector = $("#file_selector");
+    
+    fileSelector.on("change", () => {
+        console.log(fileSelector.val());
         $("#update_db").removeClass("disabled");
     });
 
     $("#update_db").on("click", () => {
         $("#update_db").addClass("disabled loading");
-        let fileName = $("#file_selector")[0].files[0];
+        let fileName = fileSelector[0].files[0];
         var reader = new FileReader();
         reader.addEventListener("loadend", function (event) {
             console.log(event.target.result);
@@ -24,7 +27,7 @@ $(document).ready(() => {
                 alert("File must contain data");
                 $("#update_db").removeClass("loading");
                 $("#update_db").addClass("disabled");
-                $("#file_selector").val("");
+                fileSelector.val("");
                 return;
             }
 
@@ -45,7 +48,7 @@ $(document).ready(() => {
                             getMasterData();
                             $("#update_db").removeClass("loading");
                             $("#update_db").addClass("disabled");
-                            $("#file_selector").val("");
+                            fileSelector.val("");
                         }, 2500);
                     },
                     error: function (xhr, error) { console.log(xhr, error); $("#update_db").removeClassClass("loading disabled"); }
