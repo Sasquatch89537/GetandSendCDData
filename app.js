@@ -74,9 +74,6 @@ app.get('/checkJobFiles', (req, res) => {
     }
     const files = fs.readdirSync(job_path);
 
-    // Delete Done Files
-    files.filter(f => f.toUpperCase().endsWith(".DON")).map(f => fs.unlinkSync(job_path + "/" + f.repl));
-
     res.send(files.length > 0 ? files : []);
 })
 
@@ -165,7 +162,7 @@ function createJobFiles(masterData) {
             if (!fs.existsSync(job_path)) {
                 fs.mkdirSync(job_path);
             }
-            fs.writeFileSync(job_path + "/" + obj.clientId + "_CDJobFile.jrq", fileContents.join('\n'));
+            fs.writeFileSync(job_path + "/" + obj.clientName.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "") + "_CDJobFile.jrq", fileContents.join('\n'));
             // file written successfully
         } catch (err) {
             console.error(err);

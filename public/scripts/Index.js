@@ -9,7 +9,7 @@ $(document).ready(() => {
     getMasterData();
 
     fileSelector = $("#file_selector");
-    
+
     fileSelector.on("change", () => {
         console.log(fileSelector.val());
         $("#update_db").removeClass("disabled");
@@ -60,14 +60,10 @@ $(document).ready(() => {
     });
 
     $("#clear_db").on("click", () => {
-        $.ajax({
-            url: '/clearMasterData',
-            type: 'get',
-            success: () => {
-                table.destroy(); getMasterData();
-            },
-            error: function (xhr, error) { console.log(xhr, error); }
-        });
+        clearDatabase(() => {
+            table.destroy();
+            getMasterData();
+        })
     });
 
     $("#clearCheckbox").checkbox();
@@ -79,9 +75,10 @@ $(document).ready(() => {
             $("#clearPendingJobs").addClass("disabled");
     })
 
-    $("#clearPendingJobs").on("click", clearPendingJobs)
+    $("#clearPendingJobs").on("click", clearPendingJobs);
     $("#selectAll").on("click", selectAllRows);
     $("#unselectAll").on("click", unselectAllRows);
+    $("#deleteSelected").on("click", deleteSelected);
 
     sendToPrinter = $("#sendToPrinter");
     sendToPrinter.on('click', function () {
@@ -100,10 +97,9 @@ function clearPendingJobs() {
     $.ajax({
         url: '/clearPendingJobFiles',
         type: 'get',
-        success: () => {$("#clearPendingJobs").removeClass("loading")},
-        error: function (xhr, error) { console.log(xhr, error); $("#clearPendingJobs").removeClass("loading disabled")}
+        success: () => { $("#clearPendingJobs").removeClass("loading") },
+        error: function (xhr, error) { console.log(xhr, error); $("#clearPendingJobs").removeClass("loading disabled") }
     });
-
 }
 
 function checkPendingJobFiles() {
@@ -149,18 +145,63 @@ function initializeTable(data) {
 }
 
 function updateTableSelected() {
-
     let totalSel = table.rows('.selected').data().length;
     $("#selectedText").text("Total Selected: " + totalSel);
 
     if (totalSel > 0) {
         sendToPrinter.addClass("enabled");
         sendToPrinter.removeClass("disabled");
+        $("#deleteSelected").addClass("enabled");
+        $("#deleteSelected").removeClass("disabled");
     }
     else {
         sendToPrinter.addClass("disabled");
         sendToPrinter.removeClass("enabled");
+         $("#deleteSelected").addClass("disabled");
+         $("#deleteSelected").removeClass("enabled");
     }
+    
+}
+
+function clearDatabase(onSuccess) {
+    $.ajax({
+        url: '/clearMasterData',
+        type: 'get',
+        success: onSuccess,
+        error: function (xhr, error) { console.log(xhr, error); }
+    });
+}
+
+function deleteSelected() {
+    table.rows('.selected').remove().draw();
+    console.log(table.rows());
+
+    //Clear the database and then upload the data
+    clearDatabase(() => {
+        let tableRows = table.rows().data().map(val => { return val.clientId + "," + val.clientName });
+        let uploadTimeout = undefined;
+        while (tableRows.length > 0) {
+            let splicedData = tableRows.splice(0, 100);
+            console.log(splicedData);
+            $.ajax({
+                url: '/uploadDBFileChunk',
+                data: { data: splicedData.join("\n") },
+                type: 'get',
+                success: (data) => {
+                    if (uploadTimeout != undefined) {
+                        clearTimeout(uploadTimeout);
+                    }
+                    uploadTimeout = setTimeout(() => {
+                        console.log("updated data");
+                        $("#update_db").removeClass("loading");
+                        $("#update_db").addClass("disabled");
+                    }, 2500);
+                },
+                error: function (xhr, error) { console.log(xhr, error); $("#update_db").removeClassClass("loading disabled"); }
+            })
+        }
+    }
+    );
 }
 
 function unselectAllRows() {
