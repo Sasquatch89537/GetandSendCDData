@@ -144,7 +144,7 @@ function clientCSVRowToJSON(data) {
         //console.log("There's an issue with the line ", dataArray)
     }
 
-    console.log(dataArray[0][0].length > 0);
+    //console.log(dataArray[0][0].length > 0);
     if (dataArray[0][0].length) {
         return {
             clientId: dataArray[0][0],
@@ -162,7 +162,11 @@ function createJobFiles(masterData) {
             if (!fs.existsSync(job_path)) {
                 fs.mkdirSync(job_path);
             }
-            fs.writeFileSync(job_path + "/" + obj.clientName.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "") + "_CDJobFile.jrq", fileContents.join('\n'));
+            let fileName = job_path + "/" + obj.clientName.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "") + "_" + obj.clientId + "_CDJobFile.jrq";
+            if (fs.existsSync(fileName)) {
+                console.log("ERROR File Exists")
+            }
+            fs.writeFileSync(fileName, fileContents.join('\n'));
             // file written successfully
         } catch (err) {
             console.error(err);
