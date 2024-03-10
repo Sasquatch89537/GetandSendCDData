@@ -162,7 +162,7 @@ function createJobFiles(masterData) {
             if (!fs.existsSync(job_path)) {
                 fs.mkdirSync(job_path);
             }
-            let fileName = job_path + "/" + obj.clientName.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "") + "_" + obj.clientId + "_CDJobFile.jrq";
+            let fileName = job_path + "/" + obj.clientId + "_" + obj.clientName.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "") + "_CDJobFile.jrq";
             if (fs.existsSync(fileName)) {
                 console.log("ERROR File Exists")
             }
